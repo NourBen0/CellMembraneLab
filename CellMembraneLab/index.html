@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cell Membrane Lab — ISAMM 2INREV</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <div class="topbar">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <div>
+        <div class="logo-text">Cell Membrane Lab <span style="font-weight:400;color:#8a8070">v2.0</span></div>
+        <div class="logo-sub">transport simulator — isamm / synthèse d'images</div>
+      </div>
+    </div>
+    <div class="top-badges">
+      <div class="badge good" id="b-mode">mode: diffusion simple</div>
+      <div class="badge"      id="b-temp">37 °C</div>
+      <div class="badge"      id="b-atp">ATP: 100%</div>
+      <div class="badge"      id="b-status">état: normal</div>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <div class="panel left">
+      <div>
+        <div class="sec">// milieu ext.</div>
+        <div class="sl-row">
+          <div class="sl-top"><span>Glucose ext</span><b id="v-ge">80</b></div>
+          <input type="range" id="s-ge" min="0" max="200" value="80" step="1">
+        </div>
+        <div class="sl-row">
+          <div class="sl-top"><span>Na⁺ ext</span><b id="v-nae">145 mM</b></div>
+          <input type="range" id="s-nae" min="0" max="300" value="145" step="1">
+        </div>
+        <div class="sl-row">
+          <div class="sl-top"><span>Cl⁻ ext</span><b id="v-cl">110 mM</b></div>
+          <input type="range" id="s-cl" min="0" max="200" value="110" step="1">
+        </div>
+      </div>
+      <div>
+        <div class="sec">// milieu int.</div>
+        <div class="sl-row">
+          <div class="sl-top"><span>Glucose int</span><b id="v-gi">10</b></div>
+          <input type="range" id="s-gi" min="0" max="200" value="10" step="1">
+        </div>
+        <div class="sl-row">
+          <div class="sl-top"><span>Na⁺ int</span><b id="v-nai">12 mM</b></div>
+          <input type="range" id="s-nai" min="0" max="300" value="12" step="1">
+        </div>
+        <div class="sl-row">
+          <div class="sl-top"><span>K⁺ int</span><b id="v-ki">140 mM</b></div>
+          <input type="range" id="s-ki" min="0" max="300" value="140" step="1">
+        </div>
+      </div>
+      <div>
+        <div class="sec">// membrane</div>
+        <div class="sl-row">
+          <div class="sl-top"><span>Perméabilité</span><b id="v-pm">50%</b></div>
+          <input type="range" id="s-pm" min="1" max="100" value="50" step="1">
+        </div>
+        <div class="sl-row">
+          <div class="sl-top"><span>Température</span><b id="v-tp">37°C</b></div>
+          <input type="range" id="s-tp" min="4" max="45" value="37" step="1">
+        </div>
+        <div class="sl-row">
+          <div class="sl-top"><span>ATP</span><b id="v-at">100%</b></div>
+          <input type="range" id="s-at" min="0" max="100" value="100" step="1">
+        </div>
+      </div>
+      <div>
+        <div class="sec">// légende</div>
+        <div class="leg-row"><div class="leg-dot" style="background:#f4a261"></div>Glucose</div>
+        <div class="leg-row"><div class="leg-dot" style="background:#e63946"></div>Na⁺</div>
+        <div class="leg-row"><div class="leg-dot" style="background:#457b9d"></div>K⁺</div>
+        <div class="leg-row"><div class="leg-dot" style="background:#74b9ff"></div>Cl⁻ / O₂</div>
+        <div class="leg-row"><div class="leg-dot" style="background:#8ecae6"></div>ATP</div>
+        <div class="leg-row"><div class="leg-dot" style="background:#e63946;opacity:.4"></div>Toxine</div>
+        <div class="leg-row">
+          <div class="leg-sq" style="background:#a8dadc"></div>
+          Protéine canal
+        </div>
+      </div>
+    </div>
+
+    <div class="canvas-area" id="ca">
+      <canvas id="cv"></canvas>
+      <div class="info-tooltip" id="tooltip"></div>
+    </div>
+
+    <div class="panel right">
+      <div>
+        <div class="sec">// mode transport</div>
+        <button class="tbtn active" id="btn-ds" onclick="setMode('diffusion')">
+          <div class="tdot" style="background:#74b9ff"></div>Diffusion simple
+        </button>
+        <button class="tbtn" id="btn-df" onclick="setMode('facilitated')">
+          <div class="tdot" style="background:#a8dadc"></div>Diffusion facilitée
+        </button>
+        <button class="tbtn" id="btn-ac" onclick="setMode('active')">
+          <div class="tdot" style="background:#8ecae6"></div>Transport actif
+        </button>
+        <button class="tbtn" id="btn-os" onclick="setMode('osmosis')">
+          <div class="tdot" style="background:#b2d8f7"></div>Osmose
+        </button>
+      </div>
+      <div>
+        <div class="sec">// événements</div>
+        <button class="tbtn danger" id="btn-tox" onclick="triggerEvent('toxin')">
+          <div class="tdot" style="background:#e63946;opacity:.5"></div>Injecter toxine
+        </button>
+        <button class="tbtn danger" id="btn-fev" onclick="triggerEvent('fever')">
+          <div class="tdot" style="background:#ef9f27"></div>Simuler fièvre
+        </button>
+        <button class="tbtn" id="btn-rst" onclick="triggerEvent('reset')">
+          <div class="tdot" style="background:#2d6a4f"></div>Reset cellule
+        </button>
+      </div>
+      <div>
+        <div class="sec">// stats live</div>
+        <div class="stat-grid">
+          <div class="scard"><div class="scard-val" id="st-flux">0</div><div class="scard-lbl">flux / s</div></div>
+          <div class="scard"><div class="scard-val" id="st-eq">0%</div><div class="scard-lbl">équilibre</div></div>
+          <div class="scard"><div class="scard-val" id="st-tot">0</div><div class="scard-lbl">passées</div></div>
+          <div class="scard"><div class="scard-val" id="st-atp">0</div><div class="scard-lbl">ATP consommé</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="sec">// gradients</div>
+        <div class="cbar-wrap">
+          <div class="cbar-row">
+            <div class="cbar-top"><span>Na⁺</span><span id="lbl-na">ext › int</span></div>
+            <div class="cbar-track"><div class="cbar-fill" id="fill-na" style="width:50%;background:#e63946"></div></div>
+          </div>
+          <div class="cbar-row">
+            <div class="cbar-top"><span>Glucose</span><span id="lbl-gl">ext › int</span></div>
+            <div class="cbar-track"><div class="cbar-fill" id="fill-gl" style="width:70%;background:#f4a261"></div></div>
+          </div>
+          <div class="cbar-row">
+            <div class="cbar-top"><span>K⁺</span><span id="lbl-k">int › ext</span></div>
+            <div class="cbar-track"><div class="cbar-fill" id="fill-k" style="width:20%;background:#457b9d"></div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="sec">// flux na⁺ (historique)</div>
+        <div class="chart-mini"><canvas id="chart-cv"></canvas></div>
+      </div>
+      <div style="margin-top:auto">
+        <button
+          onclick="sendPrompt('Explique-moi la différence entre diffusion simple et transport actif en termes de biologie cellulaire')"
+          style="width:100%;border:1px solid #d8d2c8;border-radius:7px;padding:7px;font-size:11px;cursor:pointer;background:#f7f5f0;color:#5a5040">
+          En savoir plus sur ce mode ↗
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="event-log" id="evlog">
+    <span class="ev-label">LOG //</span>
+    <span class="ev-item good" id="ev0">simulation démarrée</span>
+  </div>
+
+</div>
+
+
+<script src="js/config.js"></script>
+<script src="js/molecules.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/texture.js"></script>
+<script src="js/renderer.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/events.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
