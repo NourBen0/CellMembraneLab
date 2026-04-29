@@ -1,5 +1,4 @@
 # Cell Membrane Lab — v2.0
-**ISAMM · 2INREV · Synthèse d'images**
 
 Simulation interactive du transport membranaire cellulaire.
 
