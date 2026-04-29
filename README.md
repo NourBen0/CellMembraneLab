@@ -1,4 +1,4 @@
-# Cell Membrane Lab — v2.0
+# Cell Membrane Lab
 
 Simulation interactive du transport membranaire cellulaire.
 
